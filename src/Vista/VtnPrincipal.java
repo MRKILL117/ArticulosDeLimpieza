@@ -16,6 +16,7 @@ public class VtnPrincipal extends javax.swing.JFrame {
      */
     public VtnPrincipal() {
         initComponents();
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -30,7 +31,7 @@ public class VtnPrincipal extends javax.swing.JFrame {
         txtCodigo = new javax.swing.JTextField();
         lblCodigo = new javax.swing.JLabel();
         btnIr = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
+        lblPrincipal = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -38,8 +39,8 @@ public class VtnPrincipal extends javax.swing.JFrame {
 
         btnIr.setText("Ir");
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel1.setText("Control de Articulos de limpieza");
+        lblPrincipal.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        lblPrincipal.setText("Control de Articulos de limpieza");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -53,7 +54,7 @@ public class VtnPrincipal extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(61, 61, 61)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel1)
+                            .addComponent(lblPrincipal)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(lblCodigo)
                                 .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)))))
@@ -63,7 +64,7 @@ public class VtnPrincipal extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(30, 30, 30)
-                .addComponent(jLabel1)
+                .addComponent(lblPrincipal)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lblCodigo)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -113,8 +114,8 @@ public class VtnPrincipal extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnIr;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel lblCodigo;
+    private javax.swing.JLabel lblPrincipal;
     private javax.swing.JTextField txtCodigo;
     // End of variables declaration//GEN-END:variables
 }
