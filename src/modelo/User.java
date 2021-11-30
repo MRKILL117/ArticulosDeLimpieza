@@ -4,7 +4,6 @@
  */
 package modelo;
 
-import controlador.MySQL;
 import java.sql.PreparedStatement;
 import java.util.Random;
 import controlador.MySQL;
@@ -79,7 +78,7 @@ public class User {
                 this.name = users.getString("name");
             }
             bd.CloseConnection();
-        } catch (Exception err) {
+        } catch (SQLException err) {
             bd.HandleError("Error al consultar usuario", err);
         }
            
