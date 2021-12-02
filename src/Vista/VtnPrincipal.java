@@ -58,6 +58,11 @@ public class VtnPrincipal extends javax.swing.JFrame {
         btnIr.setText("Ir");
         btnIr.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnIr.setBorderPainted(false);
+        btnIr.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnIrActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -105,6 +110,20 @@ public class VtnPrincipal extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnIrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIrActionPerformed
+        String code = this.txtCodigo.getText();
+        int firstNumber = Integer.parseInt(code.split("")[0]);
+        if(firstNumber == 1) {
+            VtnAdministrador adminWindow = new VtnAdministrador(Integer.parseInt(code));
+            adminWindow.setVisible(true);
+        }
+        else {
+            VtnEmpleado employeeWindow = new VtnEmpleado(Integer.parseInt(code));
+            employeeWindow.setVisible(true);
+        }
+        this.dispose();
+    }//GEN-LAST:event_btnIrActionPerformed
 
     /**
      * @param args the command line arguments

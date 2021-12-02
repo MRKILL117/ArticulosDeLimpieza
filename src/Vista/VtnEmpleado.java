@@ -10,6 +10,8 @@ package vista;
  * @author Usuario
  */
 public class VtnEmpleado extends javax.swing.JFrame {
+    
+    private int employeeCode;
 
     /**
      * Creates new form VtnEmpleado
@@ -17,6 +19,12 @@ public class VtnEmpleado extends javax.swing.JFrame {
     public VtnEmpleado() {
         initComponents();
         this.setLocationRelativeTo(null);
+    }
+    
+    public VtnEmpleado(int employeeCode) {
+        initComponents();
+        this.setLocationRelativeTo(null);
+        this.employeeCode = employeeCode;
     }
 
     /**
