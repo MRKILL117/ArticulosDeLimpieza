@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
  */
 public class VtnAdministrador extends javax.swing.JFrame {
 
+    private int adminCode;
     /**
      * Creates new form VtnAdministrador
      */
@@ -20,7 +21,12 @@ public class VtnAdministrador extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(null);
     }
-
+    
+    public VtnAdministrador(int adminCode) {
+        initComponents();
+        this.setLocationRelativeTo(null);
+        this.adminCode = adminCode;
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
