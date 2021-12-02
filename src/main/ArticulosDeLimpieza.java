@@ -27,7 +27,7 @@ public class ArticulosDeLimpieza {
         try {
             // Columnas de la tabla
             String[] columns = {"code", "name"};
-            PreparedStatement query = bd.CreateSelectStatement("user", "code = 20310066");
+            PreparedStatement query = bd.CreateInsertStatement("user", columns);
             query.setInt(1, 20310066);
             query.setString(2, "Antonio Romano");
             bd.Insert(query);
