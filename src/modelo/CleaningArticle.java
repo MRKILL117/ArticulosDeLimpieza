@@ -17,17 +17,22 @@ public class CleaningArticle {
     
     protected int code;
     protected String name;
-    protected boolean status;
+    protected boolean lended;
+    private String tableName;
 
     
     public CleaningArticle(){
-        
+        this.code = 0;
+        this.name = "";
+        this.lended = false;
+        this.tableName = "cleaning_article";
     }
     
     public CleaningArticle(int code, String name){
         this.code = code;
         this.name = name;
-        this.status = false;
+        this.lended = false;
+        this.tableName = "cleaning_article";
     }
     public int getCode() {
         return code;
@@ -46,51 +51,89 @@ public class CleaningArticle {
     }
 
     public boolean isStatus() {
-        return status;
+        return this.lended;
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
+    public void setStatus(boolean lended) {
+        this.lended = lended;
     }
     
     public void showData(){
         System.out.println(this.code);
         System.out.println(this.name);
-        System.out.println(this.status);
+        System.out.println(this.lended ? "Prestado" : "Disponible");
     }
     
-    public void insertInTable(){
+    public boolean insertInTable(){
         MySQL bd = new MySQL("articulos", "root", "");
         
-         try {
-        String[] columns = {"code","name","lended"};
-        PreparedStatement query = bd.CreateInsertStatement("cleaningarticle", columns);
-        query.setInt(1, this.code);
-        query.setString(2, this.name);
-       query.setBoolean(3, this.status);
-        bd.Insert(query);
+        try {
+            String[] columns = {"code","name","lended"};
+            PreparedStatement query = bd.CreateInsertStatement(this.tableName, columns);
+            query.setInt(1, this.code);
+            query.setString(2, this.name);
+            query.setBoolean(3, this.lended);
+            bd.Insert(query);
+            return true;
         } catch (SQLException err) {
             bd.HandleError("Error al insertar datos en query", err);
+            return false;
         }
     }
     
-    public void consultFromTable (){
+    public void consultFromTable (int code){
         MySQL bd = new MySQL("articulos", "root", "");
+        String condition = "code = " + String.valueOf(code);
         
-        String condition = "code = ";
-        
-        condition += String.valueOf(this.code);
         try {
-             PreparedStatement query = bd.CreateSelectStatement("cleaningarticle", condition);
+            PreparedStatement query = bd.CreateSelectStatement(this.tableName, condition);
             ResultSet cleaningArticles = bd.Select(query);
             if(cleaningArticles.next()) {
                 this.code = cleaningArticles.getInt("code");
                 this.name = cleaningArticles.getString("name");
-                this.status = cleaningArticles.getBoolean("lended");
+                this.lended = cleaningArticles.getBoolean("lended");
             }
             bd.CloseConnection();
         } catch (Exception err) {
             bd.HandleError("Error al consultar usuario", err);
+        }
+    }
+    
+    public void UpdateInTable() {
+        MySQL bd = new MySQL("articulos", "root", "");
+        String condition = "code = " + String.valueOf(code);
+        
+        try {
+            PreparedStatement query = bd.CreateSelectStatement(this.tableName, condition);
+            ResultSet cleaningArticles = bd.Select(query);
+            if(cleaningArticles.next()) {
+                this.code = cleaningArticles.getInt("code");
+                this.name = cleaningArticles.getString("name");
+                this.lended = cleaningArticles.getBoolean("lended");
+            }
+            bd.CloseConnection();
+        } catch (Exception err) {
+            bd.HandleError("Error al consultar usuario", err);
+        }
+    }
+    
+    public boolean DeleteFromTable() {
+        MySQL bd = new MySQL("articulos", "root", "");
+        String condition = "code = " + String.valueOf(code);
+        
+        try {
+            PreparedStatement query = bd.CreateSelectStatement(this.tableName, condition);
+            ResultSet cleaningArticles = bd.Select(query);
+            if(cleaningArticles.next()) {
+                this.code = cleaningArticles.getInt("code");
+                this.name = cleaningArticles.getString("name");
+                this.lended = cleaningArticles.getBoolean("lended");
+            }
+            bd.CloseConnection();
+            return true;
+        } catch (Exception err) {
+            bd.HandleError("Error al consultar usuario", err);
+            return false;
         }
     }
 }

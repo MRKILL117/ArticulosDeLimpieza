@@ -54,7 +54,6 @@ public class VtnPrincipal extends javax.swing.JFrame {
 
         btnIr.setBackground(new java.awt.Color(240, 179, 242));
         btnIr.setFont(new java.awt.Font("Malgun Gothic", 0, 14)); // NOI18N
-        btnIr.setIcon(new javax.swing.ImageIcon("G:\\Proyecto Tercer parcial\\ArticulosDeLimpieza\\img\\flecha_verde.png")); // NOI18N
         btnIr.setText("Ir");
         btnIr.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnIr.setBorderPainted(false);
@@ -96,6 +95,8 @@ public class VtnPrincipal extends javax.swing.JFrame {
                 .addComponent(btnIr)
                 .addContainerGap(23, Short.MAX_VALUE))
         );
+
+        txtCodigo.getAccessibleContext().setAccessibleName("codeTextBox");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

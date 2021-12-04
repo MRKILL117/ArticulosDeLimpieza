@@ -5,7 +5,10 @@
  */
 package vista;
 
+import java.util.Random;
 import javax.swing.JOptionPane;
+import modelo.CleaningArticle;
+import modelo.User;
 
 /**
  *
@@ -14,18 +17,27 @@ import javax.swing.JOptionPane;
 public class VtnAdministrador extends javax.swing.JFrame {
 
     private int adminCode;
+    private boolean isEditing;
+    private CleaningArticle article;
+    private User admin;
+    private Alert alert;
+    private DeleteArticle deleteModal;
+    
     /**
      * Creates new form VtnAdministrador
      */
     public VtnAdministrador() {
         initComponents();
         this.setLocationRelativeTo(null);
+        this.adminCode = 0;
+        this.isEditing = false;
     }
     
     public VtnAdministrador(int adminCode) {
         initComponents();
         this.setLocationRelativeTo(null);
         this.adminCode = adminCode;
+        this.isEditing = false;
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -45,17 +57,18 @@ public class VtnAdministrador extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
-        jTextField4 = new javax.swing.JTextField();
+        articleToDeleteTextField = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        searchButtonDelete = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        codeTextField = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        articleNameTextField = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
-        btnBuscar = new javax.swing.JButton();
+        articleCodeTextField = new javax.swing.JTextField();
+        searchButtonAddOrEdit = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
         btnRegresar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -100,44 +113,41 @@ public class VtnAdministrador extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(12, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(38, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(17, 17, 17)
                 .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(65, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         JTPinventario.addTab("General", jPanel1);
 
         jPanel3.setBackground(new java.awt.Color(240, 168, 247));
 
-        jTextField4.setBackground(new java.awt.Color(255, 211, 244));
-        jTextField4.setFont(new java.awt.Font("Malgun Gothic", 0, 12)); // NOI18N
+        articleToDeleteTextField.setBackground(new java.awt.Color(255, 211, 244));
+        articleToDeleteTextField.setFont(new java.awt.Font("Malgun Gothic", 0, 12)); // NOI18N
 
         jLabel6.setFont(new java.awt.Font("Malgun Gothic", 0, 12)); // NOI18N
         jLabel6.setText("Buscar por código para eliminar:");
 
-        jButton1.setBackground(new java.awt.Color(240, 179, 242));
-        jButton1.setFont(new java.awt.Font("Malgun Gothic", 0, 12)); // NOI18N
-        jButton1.setIcon(new javax.swing.ImageIcon("G:\\Proyecto Tercer parcial\\ArticulosDeLimpieza\\img\\LUpa.png")); // NOI18N
-        jButton1.setText("Buscar");
-        jButton1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jButton1.setBorderPainted(false);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        searchButtonDelete.setBackground(new java.awt.Color(240, 179, 242));
+        searchButtonDelete.setFont(new java.awt.Font("Malgun Gothic", 0, 12)); // NOI18N
+        searchButtonDelete.setText("Buscar");
+        searchButtonDelete.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        searchButtonDelete.setBorderPainted(false);
+        searchButtonDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                searchButtonDeleteActionPerformed(evt);
             }
         });
 
@@ -149,12 +159,12 @@ public class VtnAdministrador extends javax.swing.JFrame {
                 .addGap(21, 21, 21)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
+                        .addComponent(articleToDeleteTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1)))
+                        .addComponent(searchButtonDelete, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -164,9 +174,9 @@ public class VtnAdministrador extends javax.swing.JFrame {
                 .addComponent(jLabel6)
                 .addGap(8, 8, 8)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
-                .addContainerGap(138, Short.MAX_VALUE))
+                    .addComponent(articleToDeleteTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(searchButtonDelete))
+                .addContainerGap(189, Short.MAX_VALUE))
         );
 
         JTPinventario.addTab("Quitar", jPanel3);
@@ -176,27 +186,38 @@ public class VtnAdministrador extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Malgun Gothic", 0, 12)); // NOI18N
         jLabel3.setText("Código:");
 
-        jTextField1.setBackground(new java.awt.Color(255, 211, 244));
-        jTextField1.setFont(new java.awt.Font("Malgun Gothic Semilight", 0, 12)); // NOI18N
+        codeTextField.setBackground(new java.awt.Color(255, 211, 244));
+        codeTextField.setFont(new java.awt.Font("Malgun Gothic Semilight", 0, 12)); // NOI18N
 
         jLabel4.setFont(new java.awt.Font("Malgun Gothic", 0, 12)); // NOI18N
         jLabel4.setText("Nombre:");
 
-        jTextField2.setBackground(new java.awt.Color(255, 211, 244));
-        jTextField2.setFont(new java.awt.Font("Malgun Gothic Semilight", 0, 12)); // NOI18N
+        articleNameTextField.setBackground(new java.awt.Color(255, 211, 244));
+        articleNameTextField.setFont(new java.awt.Font("Malgun Gothic Semilight", 0, 12)); // NOI18N
 
         jLabel5.setFont(new java.awt.Font("Malgun Gothic", 0, 12)); // NOI18N
         jLabel5.setText("Buscar para editar:");
 
-        jTextField3.setBackground(new java.awt.Color(255, 211, 244));
-        jTextField3.setFont(new java.awt.Font("Malgun Gothic Semilight", 0, 12)); // NOI18N
+        articleCodeTextField.setBackground(new java.awt.Color(255, 211, 244));
+        articleCodeTextField.setFont(new java.awt.Font("Malgun Gothic Semilight", 0, 12)); // NOI18N
 
-        btnBuscar.setBackground(new java.awt.Color(240, 179, 242));
-        btnBuscar.setFont(new java.awt.Font("Malgun Gothic", 0, 12)); // NOI18N
-        btnBuscar.setIcon(new javax.swing.ImageIcon("G:\\Proyecto Tercer parcial\\ArticulosDeLimpieza\\img\\LUpa.png")); // NOI18N
-        btnBuscar.setText("Buscar");
-        btnBuscar.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        btnBuscar.setBorderPainted(false);
+        searchButtonAddOrEdit.setBackground(new java.awt.Color(240, 179, 242));
+        searchButtonAddOrEdit.setFont(new java.awt.Font("Malgun Gothic", 0, 12)); // NOI18N
+        searchButtonAddOrEdit.setText("Buscar");
+        searchButtonAddOrEdit.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        searchButtonAddOrEdit.setBorderPainted(false);
+        searchButtonAddOrEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchButtonAddOrEditActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("Guardar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -206,16 +227,21 @@ public class VtnAdministrador extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField1)
-                            .addComponent(jTextField3)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5)
                             .addComponent(jLabel3)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnBuscar))
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel4))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel4))
+                        .addGap(0, 269, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(articleCodeTextField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
+                                .addComponent(codeTextField, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(articleNameTextField)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(searchButtonAddOrEdit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -224,24 +250,27 @@ public class VtnAdministrador extends javax.swing.JFrame {
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnBuscar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(codeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(searchButtonAddOrEdit))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(articleCodeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(articleNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28))
         );
+
+        codeTextField.getAccessibleContext().setAccessibleName("");
 
         JTPinventario.addTab("Agregar/editar", jPanel2);
 
         btnRegresar.setBackground(new java.awt.Color(240, 179, 242));
         btnRegresar.setFont(new java.awt.Font("Malgun Gothic", 0, 12)); // NOI18N
-        btnRegresar.setIcon(new javax.swing.ImageIcon("G:\\Proyecto Tercer parcial\\ArticulosDeLimpieza\\img\\Back.png")); // NOI18N
         btnRegresar.setText("Regresar");
         btnRegresar.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         btnRegresar.setBorderPainted(false);
@@ -258,14 +287,13 @@ public class VtnAdministrador extends javax.swing.JFrame {
             .addComponent(lblAdmin, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(lblInventarios, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(JTPinventario, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(155, 155, 155)
-                        .addComponent(btnRegresar)))
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addGap(128, 128, 128)
+                .addComponent(btnRegresar, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addComponent(JTPinventario)
+                .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -275,10 +303,10 @@ public class VtnAdministrador extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblInventarios)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(JTPinventario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(JTPinventario, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(36, 36, 36)
                 .addComponent(btnRegresar)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(7, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -295,9 +323,14 @@ public class VtnAdministrador extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        JOptionPane.showMessageDialog(this,"Usuario no encontrado");
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void searchButtonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonDeleteActionPerformed
+        this.article = new CleaningArticle();
+        this.article.consultFromTable(Integer.parseInt(this.articleToDeleteTextField.getText()));
+        if(this.article.getCode() != 0) {
+            this.deleteModal = new DeleteArticle("¿Esta seguro que desea eliminar el articulo '" + this.article.getName() + "' con el codigo " + this.article.getCode() + "?");
+            
+        }
+    }//GEN-LAST:event_searchButtonDeleteActionPerformed
 
     private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
         VtnPrincipal main = new VtnPrincipal();
@@ -305,6 +338,40 @@ public class VtnAdministrador extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btnRegresarActionPerformed
 
+    private void searchButtonAddOrEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonAddOrEditActionPerformed
+        this.article = new CleaningArticle();
+        this.article.consultFromTable(Integer.parseInt(this.codeTextField.getText()));
+        this.isEditing = true;
+        this.articleCodeTextField.setText(String.valueOf(this.article.getCode()));
+        this.articleNameTextField.setText(this.article.getName());
+    }//GEN-LAST:event_searchButtonAddOrEditActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        if(this.isEditing) this.UpdateArticle();
+        else this.CreateArticle();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void CreateArticle() {
+        this.article = new CleaningArticle(Integer.parseInt(this.articleCodeTextField.getText()), this.articleNameTextField.getText());
+        if(this.article.insertInTable()) {
+            this.alert = new Alert("Articulo agregado correctamente");
+        }
+        else {
+            this.alert = new Alert("Error al agregar el articulo");
+        }
+        this.alert.setVisible(true);
+        this.CleanTextFields();
+    }
+    
+    private void UpdateArticle() {
+    }
+    
+    private void CleanTextFields() {
+        this.codeTextField.setText("");
+        this.articleCodeTextField.setText("");
+        this.articleNameTextField.setText("");
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -342,9 +409,12 @@ public class VtnAdministrador extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTabbedPane JTPinventario;
-    private javax.swing.JButton btnBuscar;
+    private javax.swing.JTextField articleCodeTextField;
+    private javax.swing.JTextField articleNameTextField;
+    private javax.swing.JTextField articleToDeleteTextField;
     private javax.swing.JButton btnRegresar;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JTextField codeTextField;
+    private javax.swing.JButton jButton2;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -356,11 +426,9 @@ public class VtnAdministrador extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
     private javax.swing.JLabel lblAdmin;
     private javax.swing.JLabel lblInventarios;
+    private javax.swing.JButton searchButtonAddOrEdit;
+    private javax.swing.JButton searchButtonDelete;
     // End of variables declaration//GEN-END:variables
 }

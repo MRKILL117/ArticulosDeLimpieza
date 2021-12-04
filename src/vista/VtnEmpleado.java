@@ -80,21 +80,18 @@ public class VtnEmpleado extends javax.swing.JFrame {
 
         btnPedir.setBackground(new java.awt.Color(240, 179, 242));
         btnPedir.setFont(new java.awt.Font("Malgun Gothic", 0, 12)); // NOI18N
-        btnPedir.setIcon(new javax.swing.ImageIcon("G:\\Proyecto Tercer parcial\\ArticulosDeLimpieza\\img\\Pedir.png")); // NOI18N
         btnPedir.setText("Pedir");
         btnPedir.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         btnPedir.setBorderPainted(false);
 
         btnDevolver.setBackground(new java.awt.Color(240, 179, 242));
         btnDevolver.setFont(new java.awt.Font("Malgun Gothic", 0, 12)); // NOI18N
-        btnDevolver.setIcon(new javax.swing.ImageIcon("G:\\Proyecto Tercer parcial\\ArticulosDeLimpieza\\img\\Devolver.png")); // NOI18N
         btnDevolver.setText("Devolver");
         btnDevolver.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         btnDevolver.setBorderPainted(false);
 
         btnRegresar.setBackground(new java.awt.Color(240, 179, 242));
         btnRegresar.setFont(new java.awt.Font("Malgun Gothic", 0, 12)); // NOI18N
-        btnRegresar.setIcon(new javax.swing.ImageIcon("G:\\Proyecto Tercer parcial\\ArticulosDeLimpieza\\img\\Back.png")); // NOI18N
         btnRegresar.setText("Regresar");
         btnRegresar.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         btnRegresar.setBorderPainted(false);
