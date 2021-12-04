@@ -9,6 +9,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import modelo.CleaningArticle;
 
 /**
  *
@@ -124,6 +125,22 @@ public class MySQL {
         return sqlQuery;
     }
     
+    public PreparedStatement CreateSelectStatement(String tableName){
+        PreparedStatement sqlQuery = null;
+        
+         try {
+            String query = "select * from " + tableName;
+            if(this.conn == null || this.conn.isClosed()) this.OpenConnection();
+           
+            sqlQuery = this.conn.prepareStatement(query);
+        } catch(SQLException err) {
+            this.HandleError("Error al crear query", err);
+        }
+        return sqlQuery;
+        
+        
+    }
+    
     public void Insert(PreparedStatement query) {
         try {
             query.executeUpdate();
@@ -141,6 +158,44 @@ public class MySQL {
             this.HandleError("Error al ejecutar insert", err);
         }
         return result;
+    }
+    public PreparedStatement createUpdateStatement(String table,String code){
+        PreparedStatement sqlQuery = null;
+        
+        try {
+            String query ="UPDATE " + table + " set lended=? WHERE code=" + code;
+            if(this.conn == null || this.conn.isClosed()) this.OpenConnection();
+            sqlQuery = this.conn.prepareStatement(query);
+        } catch (Exception err) {
+          this.HandleError("Error al actualizar la base de datos", err);
+        }
+        
+        return sqlQuery;
+        
+    }
+    public CleaningArticle searchInTable(String codigo){
+        CleaningArticle ca = null;
+        ResultSet rs = null;
+        String condition = "code = ";
+        
+        condition += codigo;
+        
+        try {
+           PreparedStatement query = CreateSelectStatement("cleaningarticle",condition);
+           rs = this.Select(query);
+           if(rs.next()){
+               ca = new CleaningArticle();
+                ca.setCode(rs.getInt("code")) ;
+                ca.setName(rs.getString("name"));
+                ca.setStatus(rs.getBoolean("lended")) ;
+           }
+           this.CloseConnection();
+           
+        } catch (Exception err) {
+            
+          this.HandleError("no se encontró el articulo", err);
+        }
+        return ca;
     }
     
 }
