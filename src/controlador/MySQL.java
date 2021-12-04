@@ -150,10 +150,6 @@ public class MySQL {
             String query = "update " + tableName + " set ";
             for(int i = 0; i < columns.length; i++) {
                 query += columns[i];
-                if(i != columns.length - 1) query += ",";
-            }
-            for(int i = 0; i < columns.length; i++) {
-                query += columns[i];
                 query += "=?";
                 if(i != columns.length - 1) query += ",";
             }

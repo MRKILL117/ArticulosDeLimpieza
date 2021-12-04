@@ -23,7 +23,6 @@ public class VtnAdministrador extends javax.swing.JFrame {
     private boolean isEditing;
     private CleaningArticle article, articleToDelete;
     private User admin;
-    private Alert alert;
     private DeleteArticle deleteModal;
     DefaultTableModel model;
     
@@ -34,8 +33,8 @@ public class VtnAdministrador extends javax.swing.JFrame {
         initComponents();
         String[] titulos = {"Código", "Nombre", "Estatus"};
         model = new DefaultTableModel(null, titulos);
-        //tblBusqueda.setModel(model);
-        this.showInTable();
+        this.tblBusqueda.setModel(model);
+        this.showInTable("");
         this.setLocationRelativeTo(null);
         this.adminCode = 0;
         this.isEditing = false;
@@ -45,8 +44,8 @@ public class VtnAdministrador extends javax.swing.JFrame {
         initComponents();
         String[] titulos = {"Código", "Nombre", "Estatus"};
         model = new DefaultTableModel(null, titulos);
-        //tblBusqueda.setModel(model);
-        this.showInTable();
+        this.tblBusqueda.setModel(model);
+        this.showInTable("");
         this.setLocationRelativeTo(null);
         this.adminCode = adminCode;
         this.isEditing = false;
@@ -67,7 +66,7 @@ public class VtnAdministrador extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         filterArticles = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblBusqueda = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
         articleToDeleteTextField = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
@@ -110,9 +109,9 @@ public class VtnAdministrador extends javax.swing.JFrame {
             }
         });
 
-        jTable1.setBackground(new java.awt.Color(255, 153, 255));
-        jTable1.setFont(new java.awt.Font("Malgun Gothic", 0, 12)); // NOI18N
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblBusqueda.setBackground(new java.awt.Color(255, 153, 255));
+        tblBusqueda.setFont(new java.awt.Font("Malgun Gothic", 0, 12)); // NOI18N
+        tblBusqueda.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
                 {null, null, null},
@@ -123,8 +122,8 @@ public class VtnAdministrador extends javax.swing.JFrame {
                 "Código", "Nombre", "Estatus"
             }
         ));
-        jTable1.setSelectionBackground(new java.awt.Color(249, 169, 242));
-        jScrollPane1.setViewportView(jTable1);
+        tblBusqueda.setSelectionBackground(new java.awt.Color(249, 169, 242));
+        jScrollPane1.setViewportView(tblBusqueda);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -320,7 +319,7 @@ public class VtnAdministrador extends javax.swing.JFrame {
                 .addComponent(lblInventarios)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(JTPinventario, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(243, 243, 243)
+                .addGap(18, 18, 18)
                 .addComponent(btnRegresar)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -347,8 +346,7 @@ public class VtnAdministrador extends javax.swing.JFrame {
             this.deleteModal.setVisible(true);
         }
         else {
-            this.alert = new Alert("Articulo no encontrado");
-            this.alert.setVisible(true);
+            JOptionPane.showMessageDialog(this, "Articulo no encontrado");
         }
     }//GEN-LAST:event_searchButtonDeleteActionPerformed
 
@@ -373,16 +371,7 @@ public class VtnAdministrador extends javax.swing.JFrame {
     private void filterArticlesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterArticlesActionPerformed
         String selectedFilter = this.filterArticles.getSelectedItem().toString().toLowerCase();
         System.out.println(selectedFilter);
-        
-        switch (selectedFilter) {
-            case "todos":
-                break;
-            case "ocupado":
-                break;
-            case "disponible":
-                break;
-            default:
-        }
+        this.showInTable(selectedFilter);
     }//GEN-LAST:event_filterArticlesActionPerformed
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
@@ -393,36 +382,54 @@ public class VtnAdministrador extends javax.swing.JFrame {
     private void CreateArticle() {
         this.article = new CleaningArticle(Integer.parseInt(this.articleCodeTextField.getText()), this.articleNameTextField.getText());
         if(this.article.insertInTable()) {
-            this.alert = new Alert("Articulo agregado correctamente");
+            JOptionPane.showMessageDialog(this, "Articulo creado");
+            this.CleanTextFields();
         }
         else {
-            this.alert = new Alert("Error al agregar el articulo");
+            JOptionPane.showMessageDialog(this, "Error al crear articulo");
         }
-        this.alert.setVisible(true);
-        this.CleanTextFields();
     }
     
     private void UpdateArticle() {
+        this.article.setName(this.articleNameTextField.getText());
+        if(this.article.UpdateInTable()) {
+            JOptionPane.showMessageDialog(this, "Articulo actualizado");
+            this.CleanTextFields();
+        }
+        else JOptionPane.showMessageDialog(this, "Error al actualizar");
     }
     
     public void DeleteArticle() {
         if(this.articleToDelete.DeleteFromTable()) {
-            this.alert = new Alert("Articulo eliminado");
+            JOptionPane.showMessageDialog(this, "Articulo eliminado");
             this.articleToDeleteTextField.setText("");
         }
-        else this.alert = new Alert("Error al eliminar articulo");
-        this.alert.setVisible(true);
+        else JOptionPane.showMessageDialog(this, "Error al eliminar");
     }
     
-    public void showInTable() {
+    public void showInTable(String filter) {
         while (model.getRowCount() > 0) {
             model.removeRow(0);
         }
+        
         String lended;
-
         MySQL bd = new MySQL("articulos", "root", "");
         try {
-            PreparedStatement query = bd.CreateSelectStatement("cleaning_article");
+            PreparedStatement query = null;
+            switch (filter) {
+                case "todos":
+                    query = bd.CreateSelectStatement("cleaning_article");
+                    break;
+                case "ocupado":
+                    query = bd.CreateSelectStatement("cleaning_article", "lended = 1");
+                    break;
+                case "disponible":
+                    query = bd.CreateSelectStatement("cleaning_article", "lended = 0");
+                    break;
+                default:
+                    query = bd.CreateSelectStatement("cleaning_article");
+                    break;
+            }
             ResultSet cleaningArticles = bd.Select(query);
             while (cleaningArticles.next()) {
                 if (cleaningArticles.getInt("lended") == 1) {
@@ -500,11 +507,11 @@ public class VtnAdministrador extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JLabel lblAdmin;
     private javax.swing.JLabel lblInventarios;
     private javax.swing.JButton saveButton;
     private javax.swing.JButton searchButtonAddOrEdit;
     private javax.swing.JButton searchButtonDelete;
+    private javax.swing.JTable tblBusqueda;
     // End of variables declaration//GEN-END:variables
 }
