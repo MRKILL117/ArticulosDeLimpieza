@@ -30,7 +30,7 @@ public class ArticulosDeLimpieza {
             PreparedStatement query = bd.CreateInsertStatement("user", columns);
             query.setInt(1, 20310066);
             query.setString(2, "Antonio Romano");
-            bd.Insert(query);
+            bd.InsertOrUpdate(query);
         } catch (SQLException err) {
             bd.HandleError("Error al insertar datos en query", err);
         }

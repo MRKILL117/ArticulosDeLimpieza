@@ -154,7 +154,22 @@ public class MySQL {
         return sqlQuery;
     }
     
-    public void Insert(PreparedStatement query) {
+    public PreparedStatement CreateDeleteStatement(String tableName, String conditions) {
+        PreparedStatement sqlQuery = null;
+        try {
+            String query = "delete from " + tableName + " where " + conditions;
+            if(conditions.length() == 0) return null;
+            if(this.conn == null || this.conn.isClosed()) this.OpenConnection();
+            this.OpenConnection();
+            return this.conn.prepareStatement(query);
+        } catch(SQLException err) {
+            this.HandleError("Error al crear query", err);
+        }
+        
+        return sqlQuery;
+    }
+    
+    public void InsertOrUpdate(PreparedStatement query) {
         try {
             query.executeUpdate();
             this.CloseConnection();

@@ -73,7 +73,7 @@ public class CleaningArticle {
             query.setInt(1, this.code);
             query.setString(2, this.name);
             query.setBoolean(3, this.lended);
-            bd.Insert(query);
+            bd.InsertOrUpdate(query);
             return true;
         } catch (SQLException err) {
             bd.HandleError("Error al insertar datos en query", err);
@@ -101,17 +101,12 @@ public class CleaningArticle {
     
     public void UpdateInTable() {
         MySQL bd = new MySQL("articulos", "root", "");
+        String[] columns = {"code","name","lended"};
         String condition = "code = " + String.valueOf(code);
         
         try {
-            PreparedStatement query = bd.CreateSelectStatement(this.tableName, condition);
-            ResultSet cleaningArticles = bd.Select(query);
-            if(cleaningArticles.next()) {
-                this.code = cleaningArticles.getInt("code");
-                this.name = cleaningArticles.getString("name");
-                this.lended = cleaningArticles.getBoolean("lended");
-            }
-            bd.CloseConnection();
+            PreparedStatement query = bd.CreateUpdateStatement(this.tableName, columns, condition);
+            bd.InsertOrUpdate(query);
         } catch (Exception err) {
             bd.HandleError("Error al consultar usuario", err);
         }
@@ -122,14 +117,8 @@ public class CleaningArticle {
         String condition = "code = " + String.valueOf(code);
         
         try {
-            PreparedStatement query = bd.CreateSelectStatement(this.tableName, condition);
-            ResultSet cleaningArticles = bd.Select(query);
-            if(cleaningArticles.next()) {
-                this.code = cleaningArticles.getInt("code");
-                this.name = cleaningArticles.getString("name");
-                this.lended = cleaningArticles.getBoolean("lended");
-            }
-            bd.CloseConnection();
+            PreparedStatement query = bd.CreateDeleteStatement(this.tableName, condition);
+            bd.InsertOrUpdate(query);
             return true;
         } catch (Exception err) {
             bd.HandleError("Error al consultar usuario", err);

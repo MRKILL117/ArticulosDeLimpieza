@@ -94,6 +94,7 @@ public class DeleteArticle extends javax.swing.JFrame {
 
     private void acceptBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptBtnActionPerformed
         this.parentWindow.DeleteArticle();
+        this.dispose();
     }//GEN-LAST:event_acceptBtnActionPerformed
 
     /**

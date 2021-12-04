@@ -18,7 +18,7 @@ public class VtnAdministrador extends javax.swing.JFrame {
 
     private int adminCode;
     private boolean isEditing;
-    private CleaningArticle article;
+    private CleaningArticle article, articleToDelete;
     private User admin;
     private Alert alert;
     private DeleteArticle deleteModal;
@@ -53,7 +53,7 @@ public class VtnAdministrador extends javax.swing.JFrame {
         lblInventarios = new javax.swing.JLabel();
         JTPinventario = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        filterArticles = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
@@ -89,9 +89,14 @@ public class VtnAdministrador extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(240, 168, 247));
 
-        jComboBox1.setBackground(new java.awt.Color(255, 210, 252));
-        jComboBox1.setFont(new java.awt.Font("Malgun Gothic", 0, 12)); // NOI18N
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "Ocupado", "Disponible" }));
+        filterArticles.setBackground(new java.awt.Color(255, 210, 252));
+        filterArticles.setFont(new java.awt.Font("Malgun Gothic", 0, 12)); // NOI18N
+        filterArticles.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "Ocupado", "Disponible" }));
+        filterArticles.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                filterArticlesActionPerformed(evt);
+            }
+        });
 
         jTable1.setBackground(new java.awt.Color(255, 153, 255));
         jTable1.setFont(new java.awt.Font("Malgun Gothic", 0, 12)); // NOI18N
@@ -116,7 +121,7 @@ public class VtnAdministrador extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(38, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(filterArticles, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18))
         );
@@ -124,7 +129,7 @@ public class VtnAdministrador extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(17, 17, 17)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(filterArticles, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
                 .addContainerGap())
@@ -324,11 +329,15 @@ public class VtnAdministrador extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void searchButtonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonDeleteActionPerformed
-        this.article = new CleaningArticle();
-        this.article.consultFromTable(Integer.parseInt(this.articleToDeleteTextField.getText()));
-        if(this.article.getCode() != 0) {
-            this.deleteModal = new DeleteArticle("¿Esta seguro que desea eliminar el articulo '" + this.article.getName() + "' con el codigo " + this.article.getCode() + "?");
-            
+        this.articleToDelete = new CleaningArticle();
+        this.articleToDelete.consultFromTable(Integer.parseInt(this.articleToDeleteTextField.getText()));
+        if(this.articleToDelete.getCode() != 0) {
+            this.deleteModal = new DeleteArticle(this, "¿Esta seguro que desea eliminar el articulo '" + this.articleToDelete.getName() + "' con el codigo " + this.articleToDelete.getCode() + "?");
+            this.deleteModal.setVisible(true);
+        }
+        else {
+            this.alert = new Alert("Articulo no encontrado");
+            this.alert.setVisible(true);
         }
     }//GEN-LAST:event_searchButtonDeleteActionPerformed
 
@@ -351,6 +360,21 @@ public class VtnAdministrador extends javax.swing.JFrame {
         else this.CreateArticle();
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void filterArticlesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterArticlesActionPerformed
+        String selectedFilter = this.filterArticles.getSelectedItem().toString().toLowerCase();
+        System.out.println(selectedFilter);
+        
+        switch (selectedFilter) {
+            case "todos":
+                break;
+            case "ocupado":
+                break;
+            case "disponible":
+                break;
+            default:
+        }
+    }//GEN-LAST:event_filterArticlesActionPerformed
+
     private void CreateArticle() {
         this.article = new CleaningArticle(Integer.parseInt(this.articleCodeTextField.getText()), this.articleNameTextField.getText());
         if(this.article.insertInTable()) {
@@ -364,6 +388,15 @@ public class VtnAdministrador extends javax.swing.JFrame {
     }
     
     private void UpdateArticle() {
+    }
+    
+    public void DeleteArticle() {
+        if(this.articleToDelete.DeleteFromTable()) {
+            this.alert = new Alert("Articulo eliminado");
+            this.articleToDeleteTextField.setText("");
+        }
+        else this.alert = new Alert("Error al eliminar articulo");
+        this.alert.setVisible(true);
     }
     
     private void CleanTextFields() {
@@ -414,8 +447,8 @@ public class VtnAdministrador extends javax.swing.JFrame {
     private javax.swing.JTextField articleToDeleteTextField;
     private javax.swing.JButton btnRegresar;
     private javax.swing.JTextField codeTextField;
+    private javax.swing.JComboBox<String> filterArticles;
     private javax.swing.JButton jButton2;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
