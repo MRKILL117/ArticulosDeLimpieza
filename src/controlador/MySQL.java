@@ -224,18 +224,18 @@ public class MySQL {
         condition += codigo;
         
         try {
-           PreparedStatement query = CreateSelectStatement("cleaningarticle",condition);
+           PreparedStatement query = CreateSelectStatement("cleaning_article", condition);
            rs = this.Select(query);
            if(rs.next()){
                ca = new CleaningArticle();
-                ca.setCode(rs.getInt("code")) ;
+                ca.setCode(rs.getInt("code"));
                 ca.setName(rs.getString("name"));
-                ca.setStatus(rs.getBoolean("lended")) ;
+                ca.setStatus(rs.getBoolean("lended"));
+                ca.showData();
            }
            this.CloseConnection();
            
         } catch (Exception err) {
-            
           this.HandleError("no se encontró el articulo", err);
         }
         return ca;

@@ -5,8 +5,11 @@
  */
 package vista;
 
-import java.util.Random;
+import controlador.MySQL;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import modelo.CleaningArticle;
 import modelo.User;
 
@@ -22,12 +25,17 @@ public class VtnAdministrador extends javax.swing.JFrame {
     private User admin;
     private Alert alert;
     private DeleteArticle deleteModal;
+    DefaultTableModel model;
     
     /**
      * Creates new form VtnAdministrador
      */
     public VtnAdministrador() {
         initComponents();
+        String[] titulos = {"Código", "Nombre", "Estatus"};
+        model = new DefaultTableModel(null, titulos);
+        //tblBusqueda.setModel(model);
+        this.showInTable();
         this.setLocationRelativeTo(null);
         this.adminCode = 0;
         this.isEditing = false;
@@ -35,6 +43,10 @@ public class VtnAdministrador extends javax.swing.JFrame {
     
     public VtnAdministrador(int adminCode) {
         initComponents();
+        String[] titulos = {"Código", "Nombre", "Estatus"};
+        model = new DefaultTableModel(null, titulos);
+        //tblBusqueda.setModel(model);
+        this.showInTable();
         this.setLocationRelativeTo(null);
         this.adminCode = adminCode;
         this.isEditing = false;
@@ -397,6 +409,34 @@ public class VtnAdministrador extends javax.swing.JFrame {
         }
         else this.alert = new Alert("Error al eliminar articulo");
         this.alert.setVisible(true);
+    }
+    
+    public void showInTable() {
+        while (model.getRowCount() > 0) {
+            model.removeRow(0);
+        }
+        String lended;
+
+        MySQL bd = new MySQL("articulos", "root", "");
+        try {
+            PreparedStatement query = bd.CreateSelectStatement("cleaning_article");
+            ResultSet cleaningArticles = bd.Select(query);
+            while (cleaningArticles.next()) {
+                if (cleaningArticles.getInt("lended") == 1) {
+                    lended = "Prestado";
+                } else {
+                    lended = "Disponible";
+                }
+
+                Object[] oUsuario = {cleaningArticles.getString("code"),
+                    cleaningArticles.getString("name"),
+                    lended};
+                model.addRow(oUsuario);
+            }
+            bd.CloseConnection();
+        } catch (Exception err) {
+            bd.HandleError("Error al consultar usuario", err);
+        }
     }
     
     private void CleanTextFields() {

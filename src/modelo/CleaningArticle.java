@@ -102,7 +102,7 @@ public class CleaningArticle {
         MySQL bd = new MySQL("articulos", "root", "");
         
         try {
-           PreparedStatement query = bd.createUpdateStatement("cleaningarticle",code);
+           PreparedStatement query = bd.createUpdateStatement(this.tableName ,code);
            query.setInt(1, status);
            bd.InsertOrUpdate(query);
         } catch (Exception e) {
