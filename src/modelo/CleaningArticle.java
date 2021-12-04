@@ -102,7 +102,7 @@ public class CleaningArticle {
         MySQL bd = new MySQL("articulos", "root", "");
         
         try {
-           PreparedStatement query = bd.createUpdateStatement("cleaningarticle",code);
+           PreparedStatement query = bd.createUpdateStatement(this.tableName ,code);
            query.setInt(1, status);
            bd.InsertOrUpdate(query);
         } catch (Exception e) {
@@ -112,16 +112,19 @@ public class CleaningArticle {
         
     }
     
-    public void UpdateInTable() {
+    public boolean UpdateInTable() {
         MySQL bd = new MySQL("articulos", "root", "");
-        String[] columns = {"code","name","lended"};
+        String[] columns = {"name"};
         String condition = "code = " + String.valueOf(code);
         
         try {
             PreparedStatement query = bd.CreateUpdateStatement(this.tableName, columns, condition);
+            query.setString(1, this.getName());
             bd.InsertOrUpdate(query);
+            return true;
         } catch (Exception err) {
             bd.HandleError("Error al consultar usuario", err);
+            return false;
         }
     }
     

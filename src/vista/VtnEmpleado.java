@@ -17,28 +17,30 @@ import modelo.CleaningArticle;
  * @author Usuario
  */
 public class VtnEmpleado extends javax.swing.JFrame {
-    
+
     private int employeeCode;
     CleaningArticle ca = new CleaningArticle();
     MySQL bd = new MySQL("articulos", "root", "");
     DefaultTableModel model;
+    
     /**
      * Creates new form VtnEmpleado
      */
     public VtnEmpleado() {
         initComponents();
-     String[] titulos={"Código","Nombre","Estatus"};
-        
-        model = new DefaultTableModel(null,titulos);
+        String[] titulos = {"Código", "Nombre", "Estatus"};
+        model = new DefaultTableModel(null, titulos);
         tblBusqueda.setModel(model);
-        this.setLocationRelativeTo(null);
-        
-       this.showInTable();
+        this.showInTable();
         this.setLocationRelativeTo(null);
     }
-    
+
     public VtnEmpleado(int employeeCode) {
         initComponents();
+        String[] titulos = {"Código", "Nombre", "Estatus"};
+        model = new DefaultTableModel(null, titulos);
+        tblBusqueda.setModel(model);
+        this.showInTable();
         this.setLocationRelativeTo(null);
         this.employeeCode = employeeCode;
     }
@@ -186,68 +188,69 @@ public class VtnEmpleado extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
-       VtnPrincipal main = new VtnPrincipal();
+        VtnPrincipal main = new VtnPrincipal();
         main.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnRegresarActionPerformed
 
     private void btnPedirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPedirActionPerformed
-     ca = bd.searchInTable(txtCodigo.getText());
-        if( ca != null){
-            if(!ca.getStatus()){
-            ca.updateArticleStatus(txtCodigo.getText(),1);
-            }else{
+        ca = bd.searchInTable(txtCodigo.getText());
+        if (ca != null) {
+            if (!ca.getStatus()) {
+                ca.updateArticleStatus(txtCodigo.getText(), 1);
+            } else {
                 JOptionPane.showMessageDialog(this, "El articulo que busca no se encuentra disponible");
             }
-            
-        }else{
+
+        } else {
             JOptionPane.showMessageDialog(this, "No se encontró el articulo");
         }
-       this.showInTable();
+        this.showInTable();
     }//GEN-LAST:event_btnPedirActionPerformed
 
     private void btnDevolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDevolverActionPerformed
         ca = bd.searchInTable(txtCodigo.getText());
-        if( ca != null){
-            if(ca.getStatus()){
-            ca.updateArticleStatus(txtCodigo.getText(),0);
-            }else{
+        if (ca != null) {
+            if (ca.getStatus()) {
+                ca.updateArticleStatus(txtCodigo.getText(), 0);
+            } else {
                 JOptionPane.showMessageDialog(this, "El articulo ya se encuentra en el almacen");
             }
-            
-        }else{
+
+        } else {
             JOptionPane.showMessageDialog(this, "No se encontró el articulo");
         }
-       this.showInTable();
+        this.showInTable();
     }//GEN-LAST:event_btnDevolverActionPerformed
-    
-    public void showInTable (){
-       while(model.getRowCount()>0){
-           model.removeRow(0);
-       }
+
+    public void showInTable() {
+        while (model.getRowCount() > 0) {
+            model.removeRow(0);
+        }
         String lended;
-        
+
         MySQL bd = new MySQL("articulos", "root", "");
         try {
-             PreparedStatement query = bd.CreateSelectStatement("cleaningarticle");
+            PreparedStatement query = bd.CreateSelectStatement("cleaning_article");
             ResultSet cleaningArticles = bd.Select(query);
-          while(cleaningArticles.next()){
-             if(cleaningArticles.getInt("lended")== 1){
-                 lended = "Prestado";
-             }else{
-                 lended = "Disponible";
-             }
-             
-              Object[] oUsuario = {cleaningArticles.getString("code"),
-                  cleaningArticles.getString("name"),
-                  lended};
-              model.addRow(oUsuario);
-          }
+            while (cleaningArticles.next()) {
+                if (cleaningArticles.getInt("lended") == 1) {
+                    lended = "Prestado";
+                } else {
+                    lended = "Disponible";
+                }
+
+                Object[] oUsuario = {cleaningArticles.getString("code"),
+                    cleaningArticles.getString("name"),
+                    lended};
+                model.addRow(oUsuario);
+            }
             bd.CloseConnection();
         } catch (Exception err) {
             bd.HandleError("Error al consultar usuario", err);
         }
     }
+
     /**
      * @param args the command line arguments
      */
