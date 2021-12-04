@@ -73,6 +73,7 @@ public class MySQL {
     
     // insert methods
     public PreparedStatement CreateInsertStatement(String tableName, String[] columns) {
+        PreparedStatement sqlQuery = null;
         try {
             String query = "insert into " + tableName + "(";
             for(int i = 0; i < columns.length; i++) {
@@ -87,14 +88,15 @@ public class MySQL {
             query += ")";
             if(this.conn == null || this.conn.isClosed()) this.OpenConnection();
             this.OpenConnection();
-            return this.conn.prepareStatement(query);
+            sqlQuery = this.conn.prepareStatement(query);
         } catch(SQLException err) {
             this.HandleError("Error al crear query", err);
-            return null;
         }
+        return sqlQuery;
     }
     
     public PreparedStatement CreateInsertStatement(String tableName, int columnsNumber) {
+        PreparedStatement sqlQuery = null;
         try {
             String query = "insert into " + tableName + " values (";
             for(int i = 0; i < columnsNumber; i++) {
@@ -104,11 +106,12 @@ public class MySQL {
             query += ")";
             if(this.conn == null || this.conn.isClosed()) this.OpenConnection();
             this.OpenConnection();
-            return this.conn.prepareStatement(query);
+            sqlQuery = this.conn.prepareStatement(query);
         } catch(SQLException err) {
             this.HandleError("Error al crear query", err);
-            return null;
         }
+        
+        return sqlQuery;
     }
     
     // select methods
@@ -122,26 +125,52 @@ public class MySQL {
         } catch(SQLException err) {
             this.HandleError("Error al crear query", err);
         }
+        
         return sqlQuery;
     }
     
-    public PreparedStatement CreateSelectStatement(String tableName){
+    // update methods
+    public PreparedStatement CreateUpdateStatement(String tableName, String[] columns, String conditions) {
         PreparedStatement sqlQuery = null;
-        
-         try {
-            String query = "select * from " + tableName;
+        try {
+            String query = "update " + tableName + " set ";
+            for(int i = 0; i < columns.length; i++) {
+                query += columns[i];
+                if(i != columns.length - 1) query += ",";
+            }
+            for(int i = 0; i < columns.length; i++) {
+                query += columns[i];
+                query += "=?";
+                if(i != columns.length - 1) query += ",";
+            }
+            if(conditions.length() == 0) return null;
+            query += " where " + conditions;
             if(this.conn == null || this.conn.isClosed()) this.OpenConnection();
-           
-            sqlQuery = this.conn.prepareStatement(query);
+            this.OpenConnection();
+            return this.conn.prepareStatement(query);
         } catch(SQLException err) {
             this.HandleError("Error al crear query", err);
         }
+        
         return sqlQuery;
-        
-        
     }
     
-    public void Insert(PreparedStatement query) {
+    public PreparedStatement CreateDeleteStatement(String tableName, String conditions) {
+        PreparedStatement sqlQuery = null;
+        try {
+            String query = "delete from " + tableName + " where " + conditions;
+            if(conditions.length() == 0) return null;
+            if(this.conn == null || this.conn.isClosed()) this.OpenConnection();
+            this.OpenConnection();
+            return this.conn.prepareStatement(query);
+        } catch(SQLException err) {
+            this.HandleError("Error al crear query", err);
+        }
+        
+        return sqlQuery;
+    }
+    
+    public void InsertOrUpdate(PreparedStatement query) {
         try {
             query.executeUpdate();
             this.CloseConnection();

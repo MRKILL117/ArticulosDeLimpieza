@@ -58,7 +58,7 @@ public class User {
         PreparedStatement query = bd.CreateInsertStatement("user", columns);
         query.setInt(1, this.code);
         query.setString(2, this.name);
-        bd.Insert(query);
+        bd.InsertOrUpdate(query);
         } catch (SQLException err) {
             bd.HandleError("Error al insertar datos en query", err);
         }
