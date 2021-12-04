@@ -8,7 +8,7 @@
       <Color blue="e2" green="e2" red="9d" type="rgb"/>
     </Property>
     <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
-      <Color id="Default Cursor"/>
+      <Color id="Cursor Por defecto"/>
     </Property>
   </Properties>
   <SyntheticProperties>
@@ -118,6 +118,9 @@
               <Font name="Malgun Gothic" size="12" style="0"/>
             </Property>
           </Properties>
+          <AccessibilityProperties>
+            <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="codeTextBox"/>
+          </AccessibilityProperties>
         </Component>
         <Component class="javax.swing.JButton" name="btnIr">
           <Properties>
@@ -138,6 +141,9 @@
             </Property>
             <Property name="borderPainted" type="boolean" value="false"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnIrActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
