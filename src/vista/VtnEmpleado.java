@@ -5,6 +5,13 @@
  */
 package vista;
 
+import controlador.MySQL;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import modelo.CleaningArticle;
+
 /**
  *
  * @author Usuario
@@ -12,12 +19,21 @@ package vista;
 public class VtnEmpleado extends javax.swing.JFrame {
     
     private int employeeCode;
-
+    CleaningArticle ca = new CleaningArticle();
+    MySQL bd = new MySQL("articulos", "root", "");
+    DefaultTableModel model;
     /**
      * Creates new form VtnEmpleado
      */
     public VtnEmpleado() {
         initComponents();
+     String[] titulos={"Código","Nombre","Estatus"};
+        
+        model = new DefaultTableModel(null,titulos);
+        tblBusqueda.setModel(model);
+        this.setLocationRelativeTo(null);
+        
+       this.showInTable();
         this.setLocationRelativeTo(null);
     }
     
@@ -40,7 +56,7 @@ public class VtnEmpleado extends javax.swing.JFrame {
         lblEmpleado = new javax.swing.JLabel();
         lblInventario = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblBusqueda = new javax.swing.JTable();
         txtCodigo = new javax.swing.JTextField();
         btnPedir = new javax.swing.JButton();
         btnDevolver = new javax.swing.JButton();
@@ -59,9 +75,9 @@ public class VtnEmpleado extends javax.swing.JFrame {
         lblInventario.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblInventario.setText("Inventario");
 
-        jTable1.setBackground(new java.awt.Color(255, 153, 255));
-        jTable1.setFont(new java.awt.Font("Malgun Gothic", 0, 12)); // NOI18N
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblBusqueda.setBackground(new java.awt.Color(255, 153, 255));
+        tblBusqueda.setFont(new java.awt.Font("Malgun Gothic", 0, 12)); // NOI18N
+        tblBusqueda.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
                 {null, null, null},
@@ -72,9 +88,9 @@ public class VtnEmpleado extends javax.swing.JFrame {
                 "Código", "Nombre", "Estatus"
             }
         ));
-        jTable1.setEnabled(false);
-        jTable1.setSelectionBackground(new java.awt.Color(240, 179, 242));
-        jScrollPane1.setViewportView(jTable1);
+        tblBusqueda.setEnabled(false);
+        tblBusqueda.setSelectionBackground(new java.awt.Color(240, 179, 242));
+        jScrollPane1.setViewportView(tblBusqueda);
 
         txtCodigo.setBackground(new java.awt.Color(255, 211, 244));
 
@@ -83,12 +99,22 @@ public class VtnEmpleado extends javax.swing.JFrame {
         btnPedir.setText("Pedir");
         btnPedir.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         btnPedir.setBorderPainted(false);
+        btnPedir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPedirActionPerformed(evt);
+            }
+        });
 
         btnDevolver.setBackground(new java.awt.Color(240, 179, 242));
         btnDevolver.setFont(new java.awt.Font("Malgun Gothic", 0, 12)); // NOI18N
         btnDevolver.setText("Devolver");
         btnDevolver.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         btnDevolver.setBorderPainted(false);
+        btnDevolver.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDevolverActionPerformed(evt);
+            }
+        });
 
         btnRegresar.setBackground(new java.awt.Color(240, 179, 242));
         btnRegresar.setFont(new java.awt.Font("Malgun Gothic", 0, 12)); // NOI18N
@@ -165,6 +191,63 @@ public class VtnEmpleado extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btnRegresarActionPerformed
 
+    private void btnPedirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPedirActionPerformed
+     ca = bd.searchInTable(txtCodigo.getText());
+        if( ca != null){
+            if(!ca.getStatus()){
+            ca.updateArticleStatus(txtCodigo.getText(),1);
+            }else{
+                JOptionPane.showMessageDialog(this, "El articulo que busca no se encuentra disponible");
+            }
+            
+        }else{
+            JOptionPane.showMessageDialog(this, "No se encontró el articulo");
+        }
+       this.showInTable();
+    }//GEN-LAST:event_btnPedirActionPerformed
+
+    private void btnDevolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDevolverActionPerformed
+        ca = bd.searchInTable(txtCodigo.getText());
+        if( ca != null){
+            if(ca.getStatus()){
+            ca.updateArticleStatus(txtCodigo.getText(),0);
+            }else{
+                JOptionPane.showMessageDialog(this, "El articulo ya se encuentra en el almacen");
+            }
+            
+        }else{
+            JOptionPane.showMessageDialog(this, "No se encontró el articulo");
+        }
+       this.showInTable();
+    }//GEN-LAST:event_btnDevolverActionPerformed
+    
+    public void showInTable (){
+       while(model.getRowCount()>0){
+           model.removeRow(0);
+       }
+        String lended;
+        
+        MySQL bd = new MySQL("articulos", "root", "");
+        try {
+             PreparedStatement query = bd.CreateSelectStatement("cleaningarticle");
+            ResultSet cleaningArticles = bd.Select(query);
+          while(cleaningArticles.next()){
+             if(cleaningArticles.getInt("lended")== 1){
+                 lended = "Prestado";
+             }else{
+                 lended = "Disponible";
+             }
+             
+              Object[] oUsuario = {cleaningArticles.getString("code"),
+                  cleaningArticles.getString("name"),
+                  lended};
+              model.addRow(oUsuario);
+          }
+            bd.CloseConnection();
+        } catch (Exception err) {
+            bd.HandleError("Error al consultar usuario", err);
+        }
+    }
     /**
      * @param args the command line arguments
      */
@@ -206,9 +289,9 @@ public class VtnEmpleado extends javax.swing.JFrame {
     private javax.swing.JButton btnRegresar;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JLabel lblEmpleado;
     private javax.swing.JLabel lblInventario;
+    private javax.swing.JTable tblBusqueda;
     private javax.swing.JTextField txtCodigo;
     // End of variables declaration//GEN-END:variables
 }

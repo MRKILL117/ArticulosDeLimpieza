@@ -50,7 +50,7 @@ public class CleaningArticle {
         this.name = name;
     }
 
-    public boolean isStatus() {
+    public boolean getStatus() {
         return this.lended;
     }
 
@@ -97,6 +97,19 @@ public class CleaningArticle {
         } catch (Exception err) {
             bd.HandleError("Error al consultar usuario", err);
         }
+    }
+    public void updateArticleStatus(String code,int status){
+        MySQL bd = new MySQL("articulos", "root", "");
+        
+        try {
+           PreparedStatement query = bd.createUpdateStatement("cleaningarticle",code);
+           query.setInt(1, status);
+           bd.InsertOrUpdate(query);
+        } catch (Exception e) {
+            bd.HandleError("Error al actualizar status", e);
+        }
+        
+        
     }
     
     public void UpdateInTable() {
