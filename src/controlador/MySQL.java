@@ -129,6 +129,20 @@ public class MySQL {
         return sqlQuery;
     }
     
+    public PreparedStatement CreateSelectStatement(String tableName) {
+        PreparedStatement sqlQuery = null;
+        try {
+            String query = "select * from " + tableName;
+            if(this.conn == null || this.conn.isClosed()) this.OpenConnection();
+            this.OpenConnection();
+            sqlQuery = this.conn.prepareStatement(query);
+        } catch(SQLException err) {
+            this.HandleError("Error al crear query", err);
+        }
+        
+        return sqlQuery;
+    }
+    
     // update methods
     public PreparedStatement CreateUpdateStatement(String tableName, String[] columns, String conditions) {
         PreparedStatement sqlQuery = null;

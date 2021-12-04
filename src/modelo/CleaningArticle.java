@@ -51,7 +51,7 @@ public class CleaningArticle {
     }
 
     public boolean getStatus() {
-        return status;
+        return this.lended;
     }
 
     public void setStatus(boolean lended) {
@@ -104,7 +104,7 @@ public class CleaningArticle {
         try {
            PreparedStatement query = bd.createUpdateStatement("cleaningarticle",code);
            query.setInt(1, status);
-           bd.Insert(query);
+           bd.InsertOrUpdate(query);
         } catch (Exception e) {
             bd.HandleError("Error al actualizar status", e);
         }
